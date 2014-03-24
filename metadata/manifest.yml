@@ -1,0 +1,24 @@
+Name: pgclient
+Cartridge-Short-Name: PGCLIENT
+Display-Name: postgresql-client-crunchy
+Description: postgresql-client-crunchy is provided by Crunchy Data Solutions (www.crunchydatasolutions.com). 
+Version: "0.1"
+Website: http://www.crunchydatasolutions.com
+Cartridge-Version: 0.1.0
+Cartridge-Vendor: crunchydatasolutions
+Categories:
+  - service
+  - database
+  - embedded
+Provides:
+  - pgclient-0.1
+  - pgclient
+Scaling:
+  Min: 1
+  Max: -1
+Endpoints:
+  - Private-IP-Name:   HOST
+    Private-Port-Name: PORT
+    Public-Port-Name:  PORT
+
+Source-Url: ssh://github.com/crunchyds/openshift-postgres-client-cartridge.git
