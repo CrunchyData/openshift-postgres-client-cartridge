@@ -43,10 +43,6 @@ function start() {
 
 
 function stop() {
-	if [ -n "$PG_NODE_TYPE" ]; then
-		$OPENSHIFT_PG_DIR/bin/stop-tunnel.sh	
-	fi
-	client_result "stopping tunnels...."	
 
     return 1
 }
