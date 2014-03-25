@@ -1,12 +1,18 @@
-
-<Resource
-    name="jdbc/connectorDs"
-    auth="Container"
-    type="javax.sql.DataSource"
-    driverClassName="org.postgresql.Driver"
-    url="jdbc:postgresql://<%= ENV['PG_MASTER_HOST'] %>:<%= ENV['PG_MASTER_PORT'] %>/template1"
-    username="<%= ENV['PG_MASTER_USER'] %>"
-    maxActive="20"
-    maxIdle="10"
-    maxWait="-1" />
-
+    <Resource name="jdbc/pgmasterds"
+              url="jdbc:postgresql://<%= ENV['OPENSHIFT_JBOSSEWS_IP'] %>:15000/template1"
+              driverClassName="org.postgresql.Driver"
+              username="<%= ENV['PG_MASTER_USER'] %>"
+              auth="Container"
+              type="javax.sql.DataSource"
+              maxActive="20"
+              maxIdle="5"
+              maxWait="10000"/>
+    <Resource name="jdbc/pgstandbyds"
+              url="jdbc:postgresql://<%= ENV['OPENSHIFT_JBOSSEWS_IP'] %>:15001/template1"
+              driverClassName="org.postgresql.Driver"
+              username="<%= ENV['PG_MASTER_USER'] %>"
+              auth="Container"
+              type="javax.sql.DataSource"
+              maxActive="20"
+              maxIdle="5"
+              maxWait="10000"/>
