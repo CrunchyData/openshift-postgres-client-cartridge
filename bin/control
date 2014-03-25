@@ -1,9 +1,7 @@
 #!/bin/bash
 
-version=pg
-
 function status() {
-
+	client_result "pgclient is installed";
 }
 
 function use-source() {
