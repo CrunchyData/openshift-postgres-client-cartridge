@@ -4,5 +4,3 @@ source $OPENSHIFT_CARTRIDGE_SDK_BASH
 
 client_result "completed install of pgclient"
 
-#erb  ~/$version/conf/pg_hba.conf.erb > $OPENSHIFT_DATA_DIR/.$version/data/pg_hba.conf
-

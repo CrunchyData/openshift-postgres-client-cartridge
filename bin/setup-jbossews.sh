@@ -11,11 +11,12 @@ then
         client_result "configuring jbossews context.xml";
         if [ -f $contextfile ];
         then
-                echo "jbossews context.xml found"
+                client_result "jbossews context.xml found"
                 erb $jbossews/context.xml.erb > $jbossews/context.xml
                 sed '/<\/Context/i MARKER' $contextfile  | sed -e '/MARKER/r '$newdatasources -e '/MARKER/d'  >> $jbossews/pgclient-context.xml
+                cp $contextfile $contextfile.bak
+                cp $jbossews/pgclient-context.xml $contextfile
         else
-                echo "jbossews context.xml not found"
+                client_result "jbossews context.xml not found"
         fi
 fi
-~             
