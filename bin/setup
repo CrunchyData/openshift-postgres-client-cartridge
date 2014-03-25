@@ -2,4 +2,9 @@
 
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
 
+if [ -n "$OPENSHIFT_JBOSSEWS_IP" ];
+then
+	bin/setup-jbossews.sh
+fi
+
 client_result "pgclient setup completed"

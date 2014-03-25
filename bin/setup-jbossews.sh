@@ -1,12 +1,14 @@
 #!/bin/bash
 
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+
 contextfile=~/jbossews/conf/context.xml
 jbossews=~/pgclient/conf/tomcat7
 newdatasources=$jbossews/context.xml
 
 if [ -n "$OPENSHIFT_JBOSSEWS_IP" ];
 then
-        echo "configuring jbossews context.xml"
+        client_result "configuring jbossews context.xml";
         if [ -f $contextfile ];
         then
                 echo "jbossews context.xml found"
