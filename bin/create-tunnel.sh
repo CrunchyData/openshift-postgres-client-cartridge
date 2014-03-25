@@ -4,7 +4,7 @@
 # create a tunnel to both the master and the standby server
 #
 
-internalIP=`env | grep OPENSHIFT | grep IP`
+internalIP=`env | grep OPENSHIFT | grep IP | cut -d"=" -f2`
 echo $internalIP
 
 nohup ssh -o UserKnownHostsFile=~/.openshift_ssh/known_hosts \
