@@ -16,7 +16,7 @@ then
                 sed '/<\/Context/i MARKER' $contextfile  | sed -e '/MARKER/r '$newdatasources -e '/MARKER/d'  >> $jbossews/pgclient-context.xml
                 cp $contextfile $contextfile.bak
                 cp $jbossews/pgclient-context.xml $contextfile
-				cd ~/jbossews/bin && control restart
+				cd ~/jbossews/bin && ./control restart
         else
                 client_result "jbossews context.xml not found"
         fi
