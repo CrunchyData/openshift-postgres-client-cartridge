@@ -4,7 +4,8 @@ source $OPENSHIFT_CARTRIDGE_SDK_BASH
 
 if [ -n "$OPENSHIFT_JBOSSEWS_IP" ];
 then
-	cd ~/pgclient/bin && setup-jbossews.sh
+	client_result "pgclient adding datasources to context.xml"
+	cd ~/pgclient/bin && ./setup-jbossews.sh
 fi
 
 client_result "pgclient setup completed"
