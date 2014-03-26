@@ -14,6 +14,6 @@ read keypath
 
 rhc scp $targetapp upload $knownpath .openshift_ssh/known_hosts
 
-rhc scp $targetapp upload $keypath app-root/data
+rhc scp $targetapp upload $keypath .openshift_ssh/pg_rsa_key
 
 

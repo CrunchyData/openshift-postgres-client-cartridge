@@ -34,7 +34,7 @@ function update() {
 }
 
 function start() {
-	~/pgclient/bin/create-tunnel.sh	
+	cd ~/pgclient/bin && ./create-tunnel.sh	
 
 	client_result "starting client tunnels...."	
 
