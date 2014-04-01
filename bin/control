@@ -34,15 +34,22 @@ function update() {
 }
 
 function start() {
+	client_result "starting client tunnels...."	
 	cd ~/pgclient/bin && ./create-tunnel.sh	
 
-	client_result "starting client tunnels...."	
+	sleep 2
 
+	client_result "starting pgpool...."
+	$OPENSHIFT_PGCLIENT_DIR/versions/pgpool/bin/pgpool  -f $OPENSHIFT_PGCLIENT_DIR/versions/pgpool/etc/pgpool.conf &> $OPENSHIFT_PGCLIENT_DIR/pgpool.log &
 
 }
 
 
 function stop() {
+
+	$OPENSHIFT_PGCLIENT_DIR/bin/stop-tunnels.sh
+
+	$OPENSHIFT_PGCLIENT_DIR/versions/pgpool/bin/pgpool  -f $OPENSHIFT_PGCLIENT_DIR/versions/pgpool/etc/pgpool.conf stop
 
     return 1
 }
