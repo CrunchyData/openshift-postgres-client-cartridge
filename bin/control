@@ -41,6 +41,7 @@ function start() {
 
 	client_result "starting pgpool...."
 	$OPENSHIFT_PGCLIENT_DIR/versions/pgpool/bin/pgpool  -f $OPENSHIFT_PGCLIENT_DIR/versions/pgpool/etc/pgpool.conf &> $OPENSHIFT_PGCLIENT_DIR/pgpool.log &
+	client_result "pgpool started jeffmc..."
 
 }
 
