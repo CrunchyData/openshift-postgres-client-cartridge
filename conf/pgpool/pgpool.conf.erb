@@ -24,7 +24,7 @@
 
 # - pgpool Connection Settings -
 
-listen_addresses = '127.1.244.1'
+listen_addresses = '<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>'
                                    # Host name or IP address to listen on:
                                    # '*' for all, '' for no TCP/IP connections
                                    # (change requires restart)
@@ -51,7 +51,7 @@ pcp_socket_dir = '/tmp'
 
 # - Backend Connection Settings -
 
-backend_hostname0 = '127.1.244.1'
+backend_hostname0 = '<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>'
                                    # Host name or IP address to connect to for backend 0
 backend_port0 = 15000
                                    # Port number for backend 0
@@ -62,7 +62,7 @@ backend_weight0 = 1
 backend_flag0 = 'ALLOW_TO_FAILOVER'
                                    # Controls various backend behavior
                                    # ALLOW_TO_FAILOVER or DISALLOW_TO_FAILOVER
-backend_hostname1 = '127.1.244.1'
+backend_hostname1 = '<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>'
 backend_port1 = 15001
 backend_weight1 = 1
 #backend_data_directory1 = '/data1'
@@ -281,7 +281,7 @@ master_slave_sub_mode = 'stream'
 sr_check_period = 10
                                    # Streaming replication check period
                                    # Disabled (0) by default
-sr_check_user = '53309d7c3d77cea50500003f'
+sr_check_user = '<%= ENV['PG_MASTER_USER'] %>'
                                    # Streaming replication check user
                                    # This is neccessary even if you disable streaming
                                    # replication delay check by sr_check_period = 0
@@ -347,7 +347,7 @@ health_check_period = 10
 health_check_timeout = 20
                                    # Health check timeout
                                    # 0 means no timeout
-health_check_user = '53309d7c3d77cea50500003f'
+health_check_user = '<%= ENV['PG_MASTER_USER'] %>'
                                    # Health check user
 health_check_password = ''
                                    # Password for health check user

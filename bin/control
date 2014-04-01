@@ -40,6 +40,7 @@ function start() {
 	sleep 2
 
 	client_result "starting pgpool...."
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPENSHIFT_PGCLIENT_DIR/versions/pgpool/lib
 	$OPENSHIFT_PGCLIENT_DIR/versions/pgpool/bin/pgpool  -f $OPENSHIFT_PGCLIENT_DIR/versions/pgpool/etc/pgpool.conf &> $OPENSHIFT_PGCLIENT_DIR/pgpool.log &
 	client_result "pgpool started jeffmc..."
 
