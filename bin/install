@@ -2,5 +2,9 @@
 
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
 
+client_result "configuring pgpool..."
+
+erb $OPENSHIFT_PGCLIENT_DIR/conf/pgpool/pgpool.conf.erb > $OPENSHIFT_PGCLIENT_DIR/versions/pgpool/etc/pgpool.conf
+
 client_result "completed install of pgclient"
 
