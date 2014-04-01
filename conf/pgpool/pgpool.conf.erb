@@ -28,7 +28,7 @@ listen_addresses = '<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>'
                                    # Host name or IP address to listen on:
                                    # '*' for all, '' for no TCP/IP connections
                                    # (change requires restart)
-port = 16000
+port = <%= ENV['PGCLIENT_LOADBAL_PORT'] %>
                                    # Port number
                                    # (change requires restart)
 socket_dir = '/tmp'
@@ -53,7 +53,7 @@ pcp_socket_dir = '/tmp'
 
 backend_hostname0 = '<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>'
                                    # Host name or IP address to connect to for backend 0
-backend_port0 = 15000
+backend_port0 = <%= ENV['PGCLIENT_MASTER_PORT'] %>
                                    # Port number for backend 0
 backend_weight0 = 1
                                    # Weight for backend 0 (only in load balancing mode)
@@ -63,7 +63,7 @@ backend_flag0 = 'ALLOW_TO_FAILOVER'
                                    # Controls various backend behavior
                                    # ALLOW_TO_FAILOVER or DISALLOW_TO_FAILOVER
 backend_hostname1 = '<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>'
-backend_port1 = 15001
+backend_port1 = <%= ENV['PGCLIENT_STANDBY_PORT'] %>
 backend_weight1 = 1
 #backend_data_directory1 = '/data1'
 backend_flag1 = 'ALLOW_TO_FAILOVER'

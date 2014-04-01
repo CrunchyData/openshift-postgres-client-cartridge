@@ -1,5 +1,5 @@
     <Resource name="jdbc/pgmasterds"
-              url="jdbc:postgresql://<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>:15000/template1"
+              url="jdbc:postgresql://<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>:<%= ENV['PGCLIENT_MASTER_PORT'] %>/template1"
               driverClassName="org.postgresql.Driver"
               username="<%= ENV['PG_MASTER_USER'] %>"
               auth="Container"
@@ -8,7 +8,7 @@
               maxIdle="5"
               maxWait="10000"/>
     <Resource name="jdbc/pgstandbyds"
-              url="jdbc:postgresql://<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>:15001/template1"
+              url="jdbc:postgresql://<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>:<%= ENV['PGCLIENT_STANDBY_PORT'] %>/template1"
               driverClassName="org.postgresql.Driver"
               username="<%= ENV['PG_MASTER_USER'] %>"
               auth="Container"
@@ -17,7 +17,7 @@
               maxIdle="5"
               maxWait="10000"/>
     <Resource name="jdbc/pgloadbalds"
-              url="jdbc:postgresql://<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>:16000/template1"
+              url="jdbc:postgresql://<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>:<%= ENV['PGCLIENT_LOADBAL_PORT'] %>/template1"
               driverClassName="org.postgresql.Driver"
               username="<%= ENV['PG_MASTER_USER'] %>"
               auth="Container"
