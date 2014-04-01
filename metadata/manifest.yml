@@ -21,4 +21,4 @@ Endpoints:
     Private-Port-Name: PORT
     Public-Port-Name:  PORT
 
-Source-Url: https://github.com/crunchyds/openshift-postgres-client-cartridge.git
+Source-Url: git@github.com:crunchyds/openshift-postgres-client-cartridge.git
