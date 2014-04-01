@@ -49,8 +49,10 @@ function start() {
 
 function stop() {
 
-	$OPENSHIFT_PGCLIENT_DIR/bin/stop-tunnels.sh
+	$OPENSHIFT_PGCLIENT_DIR/bin/stop-tunnel.sh
 
+
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPENSHIFT_PGCLIENT_DIR/versions/pgpool/lib
 	$OPENSHIFT_PGCLIENT_DIR/versions/pgpool/bin/pgpool  -f $OPENSHIFT_PGCLIENT_DIR/versions/pgpool/etc/pgpool.conf stop
 
     return 1
