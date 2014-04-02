@@ -49,7 +49,7 @@ rhc ssh -a $clientname --command 'date'
 
 echo "copying key to servers...."
 
-defaultknownpath=`pwd`/known_hosts
+defaultknownpath=`pwd`/pg_known_hosts
 echo "enter full path of known_hosts file [" $defaultknownpath "]:"
 read knownpath
 
