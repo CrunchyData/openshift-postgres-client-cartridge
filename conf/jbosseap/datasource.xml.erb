@@ -1,0 +1,63 @@
+
+		<datasource jta="true" jndi-name="java:jboss/datasources/pgmasterds" pool-name="java:jboss/datasources/pgmasterds_Pool" enabled="true" use-java-context="true" use-ccm="true">
+         <connection-url>jdbc:postgresql://<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>:<%= ENV['PGCLIENT_MASTER_PORT'] %>/template1;DB_CLOSE_DELAY=-1</connection-url>
+         <driver-class>org.postgresql.Driver</driver-class>
+         <driver>postgresql-jdbc4</driver>
+         <pool>
+            <min-pool-size>2</min-pool-size>
+            <max-pool-size>20</max-pool-size>
+            <prefill>true</prefill>
+         </pool>
+         <security>
+            <user-name><%= ENV['PG_MASTER_USER'] %></user-name>
+            <password></password>
+         </security>
+         <validation>
+            <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
+            <validate-on-match>false</validate-on-match>
+            <background-validation>false</background-validation>
+            <use-fast-fail>false</use-fast-fail>
+         </validation>
+      </datasource>
+
+		<datasource jta="true" jndi-name="java:jboss/datasources/pgstandbyds" pool-name="java:jboss/datasources/pgstandbyds_Pool" enabled="true" use-java-context="true" use-ccm="true">
+         <connection-url>jdbc:postgresql://<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>:<%= ENV['PGCLIENT_STANDBY_PORT'] %>/template1;DB_CLOSE_DELAY=-1</connection-url>
+         <driver-class>org.postgresql.Driver</driver-class>
+         <driver>postgresql-jdbc4</driver>
+         <pool>
+            <min-pool-size>2</min-pool-size>
+            <max-pool-size>20</max-pool-size>
+            <prefill>true</prefill>
+         </pool>
+         <security>
+            <user-name><%= ENV['PG_MASTER_USER'] %></user-name>
+            <password></password>
+         </security>
+         <validation>
+            <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
+            <validate-on-match>false</validate-on-match>
+            <background-validation>false</background-validation>
+            <use-fast-fail>false</use-fast-fail>
+         </validation>
+      </datasource>
+
+		<datasource jta="true" jndi-name="java:jboss/datasources/pgloadbalds" pool-name="java:jboss/datasources/pgloadbalds_Pool" enabled="true" use-java-context="true" use-ccm="true">
+         <connection-url>jdbc:postgresql://<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>:<%= ENV['PGCLIENT_LOADBAL_PORT'] %>/template1;DB_CLOSE_DELAY=-1</connection-url>
+         <driver-class>org.postgresql.Driver</driver-class>
+         <driver>postgresql-jdbc4</driver>
+         <pool>
+            <min-pool-size>2</min-pool-size>
+            <max-pool-size>20</max-pool-size>
+            <prefill>true</prefill>
+         </pool>
+         <security>
+            <user-name><%= ENV['PG_MASTER_USER'] %></user-name>
+            <password></password>
+         </security>
+         <validation>
+            <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
+            <validate-on-match>false</validate-on-match>
+            <background-validation>false</background-validation>
+            <use-fast-fail>false</use-fast-fail>
+         </validation>
+      </datasource>
