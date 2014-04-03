@@ -2,15 +2,21 @@
 
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
 
-echo "5432" > env/PGCLIENT_REMOTE_PG_PORT
-echo "15000" > env/PGCLIENT_MASTER_PORT
-echo "15001" > env/PGCLIENT_STANDBY_PORT
-echo "16000" > env/PGCLIENT_LOADBAL_PORT
+echo "5432" > $OPENSHIFT_PGCLIENT_DIR/env/PGCLIENT_REMOTE_PG_PORT
+echo "15000" > $OPENSHIFT_PGCLIENT_DIR/env/PGCLIENT_MASTER_PORT
+echo "15001" > $OPENSHIFT_PGCLIENT_DIR/env/PGCLIENT_STANDBY_PORT
+echo "16000" > $OPENSHIFT_PGCLIENT_DIR/env/PGCLIENT_LOADBAL_PORT
 
 if [ -n "$OPENSHIFT_JBOSSEWS_IP" ];
 then
-	client_result "pgclient adding datasources to context.xml"
+	client_result "pgclient adding datasources to jbossews context.xml"
 	cd ~/pgclient/bin && ./setup-jbossews.sh
+fi
+
+if [ -n "$OPENSHIFT_JBOSSEAP_IP" ];
+then
+        client_result "pgclient adding datasources to jbosseap standalone.xml"
+        $OPENSHIFT_PGCLIENT_DIR/bin/setup-jbosseap.sh
 fi
 
 client_result "pgclient setup completed"
