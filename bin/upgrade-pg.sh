@@ -17,13 +17,13 @@ echo "upgrading the crunchy pg database version..."
 
 echo "shutting down the postgres database..."
 
-rhc cartridge-stop crunchydatasolutions-pg-1.0 --app $targetapp
+rhc ssh -a $targetapp --command 'pg/bin/control stop'
 
 rhc ssh -a $targetapp --command 'pg/bin/perform-upgrade.sh app-root/data/$thebase'
 
 echo "starting the postgres database...."
 
-rhc cartridge-start crunchydatasolutions-pg-1.0 --app $targetapp
+rhc ssh -a $targetapp --command 'pg/bin/control start'
 
 echo "the upgrade is completed, log into your app to verify!"
 
