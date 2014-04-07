@@ -11,6 +11,7 @@ if [ -n "$OPENSHIFT_JBOSSEWS_IP" ];
 then
 	client_result "pgclient adding datasources to jbossews context.xml"
 	$OPENSHIFT_PGCLIENT_DIR/bin/setup-jbossews.sh
+	$OPENSHIFT_JBOSSEWS_DIR/bin/control restart
 fi
 
 if [ -n "$OPENSHIFT_JBOSSEAP_IP" ];
