@@ -10,7 +10,7 @@ echo "16000" > $OPENSHIFT_PGCLIENT_DIR/env/PGCLIENT_LOADBAL_PORT
 if [ -n "$OPENSHIFT_JBOSSEWS_IP" ];
 then
 	client_result "pgclient adding datasources to jbossews context.xml"
-	cd ~/pgclient/bin && ./setup-jbossews.sh
+	$OPENSHIFT_PGCLIENT_DIR/bin/setup-jbossews.sh
 fi
 
 if [ -n "$OPENSHIFT_JBOSSEAP_IP" ];
