@@ -20,34 +20,12 @@ if [[ -z $openshiftdomain ]];
 	then openshiftdomain=$currentname;
 fi
 
-defaultappname="pgclientapp"
-echo "enter the name of the client app to create ["$defaultappname"]:"
-echo "caution:  this script deletes the app if it already exists!!"
-read clientname
-if [[ -z $clientname ]];
-    then clientname=$defaultappname;
-fi
-
-#
-# perform cleanup if this client already existed
-#
-rhc app-delete -a $clientname --confirm
-/bin/rm -rf $clientname
-
 defaultwebframework="jbossews-2.0"
 echo "enter the web framework to use ["$defaultwebframework"]:"
 read webframework
 if [[ -z $webframework ]];
     then webframework=$defaultwebframework;
 fi
-
-rhc create-app -a $clientname -t $webframework
-echo $clientname " created..."
-
-#force a key to be added to your local known_hosts file
-rhc ssh -a $clientname --command 'date'
-
-echo "copying key to servers...."
 
 defaultknownpath=`pwd`/pg_known_hosts
 echo "enter full path of known_hosts file [" $defaultknownpath "]:"
@@ -64,6 +42,28 @@ read keypath
 if [[ -z $keypath ]];
     then keypath=$defaultkeypath;
 fi
+
+defaultappname="pgclientapp"
+echo "enter the name of the client app to create ["$defaultappname"]:"
+echo "caution:  this script deletes the app if it already exists!!"
+read clientname
+if [[ -z $clientname ]];
+    then clientname=$defaultappname;
+fi
+
+#
+# perform cleanup if this client already existed
+#
+rhc app-delete -a $clientname --confirm
+/bin/rm -rf $clientname
+
+rhc create-app -a $clientname -t $webframework
+echo $clientname " created..."
+
+#force a key to be added to your local known_hosts file
+rhc ssh -a $clientname --command 'date'
+
+echo "copying key to servers...."
 
 rhc scp $clientname upload $knownpath .openshift_ssh/known_hosts
 
