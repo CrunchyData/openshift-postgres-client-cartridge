@@ -46,4 +46,7 @@ if [ -n "$PG_NODE_TYPE" ]; then
         fi
 fi
 
+client_result "need to set PG_TUNNEL_PORTs!"
+#echo "15000" > env/PG_TUNNEL_PORT
+
 client_result "pgclient setup completed"
