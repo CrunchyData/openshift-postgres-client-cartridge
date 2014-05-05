@@ -130,7 +130,7 @@ sleep 2
 
 echo "begin configuring postgres servers for replication.."
 
-rhc ssh -a $pgmastername --command '~/pg/bin/configure.sh'
+rhc ssh -a $pgmastername --command '~/pgclient/bin/configure.sh'
 echo "configured master for replication.."
 
 rhc ssh -a $pgmastername --command '~/pg/bin/control start'
@@ -141,7 +141,7 @@ echo "creating backup for standby servers..."
 for standbyapp in  ${standbyarray[*]}
 do
 	echo "creating standby data for "$standbyapp
-	rhc ssh -a $standbyapp --command '~/pg/bin/standby_replace_data.sh'
+	rhc ssh -a $standbyapp --command '~/pgclient/bin/standby_replace_data.sh'
 	sleep 4
 	echo "starting pg database on "$standbyapp
 	rhc ssh -a $standbyapp --command '~/pg/bin/control start'
