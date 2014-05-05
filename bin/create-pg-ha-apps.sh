@@ -147,5 +147,8 @@ do
 	rhc ssh -a $standbyapp --command '~/pg/bin/control start'
 done
 
+echo "grant replication role on master to master user.."
+rhc ssh -a $pgmastername --command '~/pgclient/bin/grant.sh'
+
 echo "postgres replication setup complete"
 
