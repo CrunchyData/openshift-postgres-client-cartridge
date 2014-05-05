@@ -34,15 +34,20 @@ function update() {
 }
 
 function start() {
-	client_result "starting client tunnels...."	
-	cd ~/pgclient/bin && ./create-tunnel.sh	
 
-	sleep 2
+	if [ -n "$PG_NODE_TYPE" ]; then
+		$OPENSHIFT_PGCLIENT_DIR/bin/create-tunnels-on-pgservers.sh
+	else
+		client_result "starting client tunnels...."	
+		$OPENSHIFT_PGCLIENT_DIR/bin/create-tunnel.sh	
 
-	client_result "starting pgpool...."
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPENSHIFT_PGCLIENT_DIR/versions/pgpool/lib
-	$OPENSHIFT_PGCLIENT_DIR/versions/pgpool/bin/pgpool  -f $OPENSHIFT_PGCLIENT_DIR/versions/pgpool/etc/pgpool.conf &> $OPENSHIFT_PGCLIENT_DIR/pgpool.log &
-	client_result "pgpool started jeffmc..."
+		sleep 2
+
+		client_result "starting pgpool...."
+		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPENSHIFT_PGCLIENT_DIR/versions/pgpool/lib
+		$OPENSHIFT_PGCLIENT_DIR/versions/pgpool/bin/pgpool  -f $OPENSHIFT_PGCLIENT_DIR/versions/pgpool/etc/pgpool.conf &> $OPENSHIFT_PGCLIENT_DIR/pgpool.log &
+		client_result "pgpool started ..."
+	fi
 
 }
 
@@ -52,8 +57,13 @@ function stop() {
 	$OPENSHIFT_PGCLIENT_DIR/bin/stop-tunnel.sh
 
 
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPENSHIFT_PGCLIENT_DIR/versions/pgpool/lib
-	$OPENSHIFT_PGCLIENT_DIR/versions/pgpool/bin/pgpool  -f $OPENSHIFT_PGCLIENT_DIR/versions/pgpool/etc/pgpool.conf stop
+	if [ -n "PG_NODE_TYPE" ]; then
+		client_result " stopping "
+	else 
+		client_result " stopping pgpool "
+		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPENSHIFT_PGCLIENT_DIR/versions/pgpool/lib
+		$OPENSHIFT_PGCLIENT_DIR/versions/pgpool/bin/pgpool  -f $OPENSHIFT_PGCLIENT_DIR/versions/pgpool/etc/pgpool.conf stop
+	fi
 
     return 1
 }
