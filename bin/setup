@@ -40,7 +40,7 @@ if [ -n "$PG_NODE_TYPE" ]; then
             	add_domain_env_var "PG_STANDBY_DNS=${OPENSHIFT_APP_DNS}:$PG_STANDBY_DNS"
             	add_domain_env_var "PG_STANDBY_IP=${OPENSHIFT_PG_HOST}:$PG_STANDBY_IP"
 			else
-            	add_domain_env_var "PG_STANDBY_DNS=${OPENSHIFT_APP_DNS}
+            	add_domain_env_var "PG_STANDBY_DNS=${OPENSHIFT_APP_DNS}"
             	add_domain_env_var "PG_STANDBY_IP=${OPENSHIFT_PG_HOST}"
 			fi
         fi
