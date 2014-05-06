@@ -1,5 +1,4 @@
-#!/bin/bash
-
+#!/bin/bash -x
 
 defaultdomain="example.com"
 echo "enter your domain name ["$defaultdomain"]:"
@@ -58,9 +57,9 @@ do
 		let "COUNTER=$COUNTER+1"
 		let "standbyportnum=$standbyportnum+1"
 done
-echo "standby servers are "${standbyarray[*]}
-echo "fqdn standby servers are "${fqdnstandbyarray[*]}
-echo "standby ports are "${standbyportarray[*]}
+echo standby servers are ${standbyarray[*]}
+echo fqdn standby servers are ${fqdnstandbyarray[*]}
+echo standby ports are ${standbyportarray[*]}
 
 # clean up master if already exists
 
@@ -80,13 +79,13 @@ echo "adding Crunchy postgres cartridge to "$pgmastername
 rhc add-cartridge crunchydatasolutions-pg-1.0 -a $pgmastername --env PG_NODE_TYPE=master  --env JEFF_PG_STANDBY_DNS_LIST="${fqdnstandbyarray[*]}" --env JEFF_PG_STANDBY_PORT_LIST="${standbyportarray[*]}"
 pgmasterip=`rhc ssh -a $pgmastername 'echo $OPENSHIFT_PG_HOST' 2> /dev/null`
 echo PG_MASTER_IP is $pgmasterip
-rhc ssh -a $pgmastername --command '~/pg/bin/control stop'
+rhc ssh -a $pgmastername '~/pg/bin/control stop'
 
 echo "adding Crunchy HA cartridge to "$pgmastername
 rhc add-cartridge crunchydatasolutions-pgclient-1.0 -a $pgmastername 
 
 #force a key to be added to your local known_hosts file
-rhc ssh -a $pgmastername --command 'date'
+rhc ssh -a $pgmastername 'date'
 
 rm ./pg_known_hosts
 touch ./pg_known_hosts
@@ -101,30 +100,30 @@ ssh-keygen -F $pgmasterhostname >> ./pg_known_hosts
 standbyuserarray=()
 cnt=${standbyarray[@]}
 idx=0
-for standbyapp in  ${standbyarray[*]}
+for standbyapp in ${standbyarray[*]};
 do
-		# clean up previous app with same name if exists
+# clean up previous app with same name if exists
 		pgstandbyhostname=$standbyapp-$openshiftdomain.$domainname
 		ssh-keygen -R $pgstandbyhostname
 		rhc app-delete -a $standbyapp --confirm
 		/bin/rm -rf $standbyapp
-		echo "creating "$standbyapp
+#		echo "creating "$standbyapp
 		rhc create-app -a $standbyapp -t $webframework -g standby --env JEFF_PG_MASTER_USER=$pgmasteruser --env JEFF_PG_MASTER_DNS=$pgmasterdns --env JEFF_PG_MASTER_IP=$pgmasterip --env JEFF_PG_TUNNEL_PORT=${standbyportarray[idx]}
-		standbyuser=rhc ssh -a $standbyapp --command 'echo $USER' 2> /dev/null
+		standbyuser=`rhc ssh -a $standbyapp 'echo $USER'` 2> /dev/null
+#		echo standby user is $standbyuser
 		standbyuserarray=( "${standbyuserarray[@]}" $standbyuser)
-		echo $standbyapp " created..."
-		echo "adding Crunchy postgres cartridge to "$standbyapp
+#		echo $standbyapp " created..."
+#		echo "adding Crunchy postgres cartridge to "$standbyapp
 		rhc add-cartridge crunchydatasolutions-pg-1.0 -a $standbyapp --env PG_NODE_TYPE=standby
-		echo "adding Crunchy HA cartridge to "$standbyapp
+#		echo "adding Crunchy HA cartridge to "$standbyapp
 		rhc add-cartridge crunchydatasolutions-pgclient-1.0 -a $standbyapp
-		rhc ssh -a $standbyapp --command 'date'
+		rhc ssh -a $standbyapp 'date'
 		ssh-keygen -F $pgstandbyhostname >> ./pg_known_hosts
-		standbyarray=( "${standbyarray[@]}" $defaultstandbyname )
 		let "idx=$idx+1"
-
 done
 
-rhc env-set JEFF_PG_STANDBY_USER_LIST="${standbyuserarray[@]}" --app $pgmastername
+echo standby users are ${standbyuserarray[@]}
+rhc env-set JEFF_PG_STANDBY_USER_LIST="`echo ${standbyuserarray[@]}`" --app $pgmastername
 
 #now, copy the pg known_hosts to the targets
 rhc scp $pgmastername upload ./pg_known_hosts .openshift_ssh/known_hosts
@@ -144,39 +143,33 @@ echo "copying key to servers...."
 rhc scp $pgmastername upload pg_rsa_key .openshift_ssh/pg_rsa_key
 
 cnt=${standbyarray[@]}
-for standbyapp in  ${standbyarray[*]}
+for standbyapp in  ${standbyarray[*]};
 do
-	echo "uploading keys to "$standbyapp
+	echo uploading keys to $standbyapp
 	rhc scp $standbyapp upload ./pg_known_hosts .openshift_ssh/known_hosts
 	rhc scp $standbyapp upload pg_rsa_key .openshift_ssh/pg_rsa_key
-	echo "stopping pg database on "$standbyapp
-	rhc ssh -a $standbyapp --command '~/pg/bin/control stop'
+	echo stopping pg database on $standbyapp
+	rhc ssh -a $standbyapp '~/pg/bin/control stop'
 done
 
-echo "all postgres servers should be stopped at this point.."
+echo all postgres servers should be stopped at this point..
 sleep 2
 
-echo "begin configuring postgres servers for replication.."
+echo begin configuring postgres servers for replication..
 
-rhc ssh -a $pgmastername --command '~/pgclient/bin/configure.sh'
-echo "configured master for replication.."
+rhc ssh -a $pgmastername '~/pgclient/bin/configure.sh'
+echo configured master for replication..
 
-rhc ssh -a $pgmastername --command '~/pg/bin/control start'
+rhc ssh -a $pgmastername '~/pg/bin/control start'
 echo "started master..."
 sleep 4
 
 echo "creating backup for standby servers..."
-for standbyapp in  ${standbyarray[*]}
+for standbyapp in  ${standbyarray[*]};
 do
-	echo "creating standby data for "$standbyapp
-	rhc ssh -a $standbyapp --command '~/pgclient/bin/standby_replace_data.sh'
+	rhc ssh -a $standbyapp '~/pgclient/bin/standby_replace_data.sh'
 	sleep 4
-	echo "starting pg database on "$standbyapp
-	rhc ssh -a $standbyapp --command '~/pg/bin/control start'
+	rhc ssh -a $standbyapp '~/pg/bin/control start'
 done
-
-echo "grant replication role on master to master user.."
-rhc ssh -a $pgmastername --command '~/pgclient/bin/grant.sh'
-
+rhc ssh -a $pgmastername '~/pgclient/bin/grant.sh'
 echo "postgres replication setup complete"
-
