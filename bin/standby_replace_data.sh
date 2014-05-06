@@ -12,7 +12,7 @@ chmod 700 $OPENSHIFT_DATA_DIR/.pg/data
 
 pg_basebackup -R  \
 --pgdata=$OPENSHIFT_DATA_DIR/.pg/data \
---host=$OPENSHIFT_PG_HOST --port=$PG_TUNNEL_PORT -U $PG_MASTER_USER
+--host=$OPENSHIFT_PG_HOST --port=$JEFF_PG_TUNNEL_PORT -U $PG_MASTER_USER
 
 echo "reconfiguring postgres conf files...."
 
