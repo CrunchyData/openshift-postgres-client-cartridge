@@ -42,12 +42,13 @@ do
 		defaultstandbyname="pgstandby"$COUNTER
 		echo "enter the name of the postgres standby app ["$defaultstandbyname"] or 'end':"
 		read pgstandbyname
-		if [ -z $pgstandbyname ]; then 
-			pgstandbyname=$defaultstandbyname
+
+		if [[ $pgstandbyname == "end" ]]; then
+			break
 		fi
 
-		if [ $pgstandbyname == "end" ]; then
-			break
+		if [ -z $pgstandbyname ]; then 
+			pgstandbyname=$defaultstandbyname
 		fi
 
 		standbyarray=( "${standbyarray[@]}" $defaultstandbyname )
@@ -76,7 +77,7 @@ pgmasterdns=$pgmastername-$openshiftdomain.$domainname
 echo $pgmasterdns is PG_MASTER_DNS
 
 echo "adding Crunchy postgres cartridge to "$pgmastername
-rhc add-cartridge crunchydatasolutions-pg-1.0 -a $pgmastername --env PG_NODE_TYPE=master  JEFF_PG_STANDBY_DNS_LIST='${fqdnstandbyarray[*]}' JEFF_PG_STANDBY_PORT_LIST='${standbyportarray[*]}'
+rhc add-cartridge crunchydatasolutions-pg-1.0 -a $pgmastername --env PG_NODE_TYPE=master  --env JEFF_PG_STANDBY_DNS_LIST="${fqdnstandbyarray[*]}" --env JEFF_PG_STANDBY_PORT_LIST="${standbyportarray[*]}"
 pgmasterip=`rhc ssh -a $pgmastername 'echo $OPENSHIFT_PG_HOST' 2> /dev/null`
 echo PG_MASTER_IP is $pgmasterip
 rhc ssh -a $pgmastername --command '~/pg/bin/control stop'
@@ -103,16 +104,16 @@ do
 		# clean up previous app with same name if exists
 		pgstandbyhostname=$standbyapp-$openshiftdomain.$domainname
 		ssh-keygen -R $pgstandbyhostname
-		rhc app-delete -a $pgstandbyname --confirm
-		/bin/rm -rf $pgstandbyname
-		echo "creating "$pgstandbyname
-		rhc create-app -a $pgstandbyname -t $webframework -g standby --env JEFF_PG_MASTER_USER=$pgmasteruser JEFF_PG_MASTER_DNS=$pgmasterdns JEFF_PG_MASTER_IP=$pgmasterip
-		echo $pgstandbyname " created..."
-		echo "adding Crunchy postgres cartridge to "$pgstandbyname
-		rhc add-cartridge crunchydatasolutions-pg-1.0 -a $pgstandbyname --env PG_NODE_TYPE=standby
-		echo "adding Crunchy HA cartridge to "$pgstandbyname
-		rhc add-cartridge crunchydatasolutions-pgclient-1.0 -a $pgstandbyname
-		rhc ssh -a $pgstandbyname --command 'date'
+		rhc app-delete -a $standbyapp --confirm
+		/bin/rm -rf $standbyapp
+		echo "creating "$standbyapp
+		rhc create-app -a $standbyapp -t $webframework -g standby --env JEFF_PG_MASTER_USER=$pgmasteruser --env JEFF_PG_MASTER_DNS=$pgmasterdns --env JEFF_PG_MASTER_IP=$pgmasterip
+		echo $standbyapp " created..."
+		echo "adding Crunchy postgres cartridge to "$standbyapp
+		rhc add-cartridge crunchydatasolutions-pg-1.0 -a $standbyapp --env PG_NODE_TYPE=standby
+		echo "adding Crunchy HA cartridge to "$standbyapp
+		rhc add-cartridge crunchydatasolutions-pgclient-1.0 -a $standbyapp
+		rhc ssh -a $standbyapp --command 'date'
 		ssh-keygen -F $pgstandbyhostname >> ./pg_known_hosts
 		standbyarray=( "${standbyarray[@]}" $defaultstandbyname )
 
