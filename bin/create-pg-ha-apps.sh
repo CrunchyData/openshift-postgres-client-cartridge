@@ -98,7 +98,9 @@ ssh-keygen -F $pgmasterhostname >> ./pg_known_hosts
 
 
 
+standbyuserarray=()
 cnt=${standbyarray[@]}
+idx=0
 for standbyapp in  ${standbyarray[*]}
 do
 		# clean up previous app with same name if exists
@@ -107,7 +109,9 @@ do
 		rhc app-delete -a $standbyapp --confirm
 		/bin/rm -rf $standbyapp
 		echo "creating "$standbyapp
-		rhc create-app -a $standbyapp -t $webframework -g standby --env JEFF_PG_MASTER_USER=$pgmasteruser --env JEFF_PG_MASTER_DNS=$pgmasterdns --env JEFF_PG_MASTER_IP=$pgmasterip
+		rhc create-app -a $standbyapp -t $webframework -g standby --env JEFF_PG_MASTER_USER=$pgmasteruser --env JEFF_PG_MASTER_DNS=$pgmasterdns --env JEFF_PG_MASTER_IP=$pgmasterip --env JEFF_PG_TUNNEL_PORT=${standbyportarray[idx]}
+		standbyuser=rhc ssh -a $standbyapp --command 'echo $USER' 2> /dev/null
+		standbyuserarray=( "${standbyuserarray[@]}" $standbyuser)
 		echo $standbyapp " created..."
 		echo "adding Crunchy postgres cartridge to "$standbyapp
 		rhc add-cartridge crunchydatasolutions-pg-1.0 -a $standbyapp --env PG_NODE_TYPE=standby
@@ -116,9 +120,11 @@ do
 		rhc ssh -a $standbyapp --command 'date'
 		ssh-keygen -F $pgstandbyhostname >> ./pg_known_hosts
 		standbyarray=( "${standbyarray[@]}" $defaultstandbyname )
+		let "idx=$idx+1"
 
 done
 
+rhc env-set JEFF_PG_STANDBY_USER_LIST="${standbyuserarray[@]}" --app $pgmastername
 
 #now, copy the pg known_hosts to the targets
 rhc scp $pgmastername upload ./pg_known_hosts .openshift_ssh/known_hosts
