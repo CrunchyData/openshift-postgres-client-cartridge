@@ -77,9 +77,9 @@ echo "enter your master postgres app name:"
 read pgmaster
 
 pgmasterip=`rhc ssh -a $pgmaster 'echo $OPENSHIFT_PG_HOST' 2> /dev/null
-pgstandbyuserlist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_USER_LIST' 2> /dev/null
-pgstandbydnslist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_DNS_LIST' 2> /dev/null
-pgstandbyportlist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_PORT_LIST' 2> /dev/null
+pgstandbyuserlist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_USER_LIST'` 2> /dev/null
+pgstandbydnslist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_DNS_LIST'` 2> /dev/null
+pgstandbyportlist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_PORT_LIST'` 2> /dev/null
 
 echo "installing crunchy pgclient cartridge onto " $clientname
 
