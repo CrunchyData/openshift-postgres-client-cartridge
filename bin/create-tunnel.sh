@@ -1,6 +1,7 @@
 #!/bin/bash 
 
 #
+# for pgpool....
 # create a tunnel to both the master and the standby server
 #
 
