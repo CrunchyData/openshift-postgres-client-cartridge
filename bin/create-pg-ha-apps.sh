@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash 
 
 defaultdomain="example.com"
 echo "enter your domain name ["$defaultdomain"]:"
