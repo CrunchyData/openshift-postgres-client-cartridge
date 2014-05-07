@@ -20,8 +20,9 @@ portarray=($JEFF_PG_STANDBY_PORT_LIST)
 
 idx=0
 
-for standby in ${dnslist[*]};
+for standby in ${dnsarray[*]};
 do
+	echo creating tunnel to ${dnsarray[idx]}
 	nohup ssh -o UserKnownHostsFile=~/.openshift_ssh/known_hosts \
 -i ~/.openshift_ssh/pg_rsa_key \
 -N -L \

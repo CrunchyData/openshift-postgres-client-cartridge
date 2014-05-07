@@ -76,14 +76,14 @@ rhc scp $clientname upload $keypath .openshift_ssh/pg_rsa_key
 echo "enter your master postgres app name:"
 read pgmaster
 
-pgmasterip=`rhc ssh -a $pgmaster 'echo $OPENSHIFT_PG_HOST' 2> /dev/null
+pgmasterip=`rhc ssh -a $pgmaster 'echo $OPENSHIFT_PG_HOST'` 2> /dev/null
 pgstandbyuserlist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_USER_LIST'` 2> /dev/null
 pgstandbydnslist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_DNS_LIST'` 2> /dev/null
 pgstandbyportlist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_PORT_LIST'` 2> /dev/null
 
 echo "installing crunchy pgclient cartridge onto " $clientname
 
-rhc add-cartridge crunchydatasolutions-pgclient-1.0 -a $clientname  --env PGCLIENT_MASTER_HOST=pgmasterip --env JEFF_PG_STANDBY_DNS_LIST="$pgstandbydnslist" --env JEFF_PG_STANDBY_PORT_LIST="$pgstandbyportlist" --env JEFF_PG_STANDBY_USER_LIST="$pgstandbyuserlist"
+rhc add-cartridge crunchydatasolutions-pgclient-1.0 -a $clientname  --env PGCLIENT_MASTER_HOST=$pgmasterip --env JEFF_PG_STANDBY_DNS_LIST="$pgstandbydnslist" --env JEFF_PG_STANDBY_PORT_LIST="$pgstandbyportlist" --env JEFF_PG_STANDBY_USER_LIST="$pgstandbyuserlist"
 
 echo "pgclient cartridge added"
 
