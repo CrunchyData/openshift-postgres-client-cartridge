@@ -82,13 +82,14 @@ pgmasteruser=`rhc ssh -a $pgmaster 'echo $USER'` 2> /dev/null
 pgstandbyuserlist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_USER_LIST'` 2> /dev/null
 pgstandbydnslist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_DNS_LIST'` 2> /dev/null
 pgstandbyportlist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_PORT_LIST'` 2> /dev/null
+pgstandbyiplist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_IP_LIST'` 2> /dev/null
 
 masterdns=$pgmaster-$currentname.$domainname
 echo $masterdns is dns for master
 
 echo "installing crunchy pgclient cartridge onto " $clientname
 
-rhc add-cartridge crunchydatasolutions-pgclient-1.0 -a $clientname  --env PGCLIENT_MASTER_DNS=$masterdns --env JEFF_PG_STANDBY_DNS_LIST="$pgstandbydnslist" --env JEFF_PG_STANDBY_PORT_LIST="$pgstandbyportlist" --env JEFF_PG_STANDBY_USER_LIST="$pgstandbyuserlist" --env JEFF_PG_MASTER_USER="$pgmasteruser" --env JEFF_PG_MASTER_IP="$pgmasterip"
+rhc add-cartridge crunchydatasolutions-pgclient-1.0 -a $clientname  --env PGCLIENT_MASTER_DNS=$masterdns --env JEFF_PG_STANDBY_DNS_LIST="$pgstandbydnslist" --env JEFF_PG_STANDBY_PORT_LIST="$pgstandbyportlist" --env JEFF_PG_STANDBY_USER_LIST="$pgstandbyuserlist" --env JEFF_PG_MASTER_USER="$pgmasteruser" --env JEFF_PG_MASTER_IP="$pgmasterip" --env JEFF_PG_STANDBY_IP_LIST="$pgstandbyiplist"
 
 echo "pgclient cartridge added"
 

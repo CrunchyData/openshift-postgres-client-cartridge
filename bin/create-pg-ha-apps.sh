@@ -110,13 +110,13 @@ do
 #		echo "creating "$standbyapp
 		rhc create-app -a $standbyapp -t $webframework -g standby --env JEFF_PG_MASTER_USER=$pgmasteruser --env JEFF_PG_MASTER_DNS=$pgmasterdns --env JEFF_PG_MASTER_IP=$pgmasterip --env JEFF_PG_TUNNEL_PORT=${standbyportarray[idx]}
 		standbyuser=`rhc ssh -a $standbyapp 'echo $USER'` 2> /dev/null
-		standbyip=`rhc ssh -a $standbyapp 'echo $OPENSHIFT_PG_HOST'` 2> /dev/null
-#		echo standby user is $standbyuser
 		standbyuserarray=( "${standbyuserarray[@]}" $standbyuser)
-		standbyiparray=( "${standbyiparray[@]}" $standbyip)
 #		echo $standbyapp " created..."
 #		echo "adding Crunchy postgres cartridge to "$standbyapp
 		rhc add-cartridge crunchydatasolutions-pg-1.0 -a $standbyapp --env PG_NODE_TYPE=standby
+		standbyip=`rhc ssh -a $standbyapp 'echo $OPENSHIFT_PG_HOST'` 2> /dev/null
+		echo standby ip is $standbyip
+		standbyiparray=( "${standbyiparray[@]}" $standbyip)
 #		echo "adding Crunchy HA cartridge to "$standbyapp
 		rhc add-cartridge crunchydatasolutions-pgclient-1.0 -a $standbyapp
 		rhc ssh -a $standbyapp 'date'
