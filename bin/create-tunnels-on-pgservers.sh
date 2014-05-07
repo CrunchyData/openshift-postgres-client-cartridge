@@ -1,20 +1,19 @@
 #!/bin/bash 
 
-echo "create-tunnel called for " $PG_NODE_TYPE
+echo "create-tunnels called for " $PG_NODE_TYPE
 
 if [ "$PG_NODE_TYPE" == "master" ]; then
-nohup ssh -o UserKnownHostsFile=~/.openshift_ssh/known_hosts \
--i ~/.openshift_ssh/pg_rsa_key \
--N -L \
-$OPENSHIFT_PG_HOST:$PG_TUNNEL_PORT:$PG_STANDBY_IP:$PG_PORT \
-$PG_STANDBY_USER@$PG_STANDBY_DNS &> /dev/null &
-fi
-
-if [ "$PG_NODE_TYPE" == "standby" ]; then
-nohup ssh -o UserKnownHostsFile=~/.openshift_ssh/known_hosts \
--i ~/.openshift_ssh/pg_rsa_key \
--N -L \
-$OPENSHIFT_PG_HOST:$JEFF_PG_TUNNEL_PORT:$PG_MASTER_IP:$PG_PORT \
-$PG_MASTER_USER@$PG_MASTER_DNS &> /dev/null &
+	#nohup ssh -o UserKnownHostsFile=~/.openshift_ssh/known_hosts \
+	#-i ~/.openshift_ssh/pg_rsa_key \
+	#-N -L \
+	#$OPENSHIFT_PG_HOST:$PG_TUNNEL_PORT:$PG_STANDBY_IP:$PG_PORT \
+	#$PG_STANDBY_USER@$PG_STANDBY_DNS &> /dev/null &
+	echo "specifically not creating tunnels on master"
+elif [ "$PG_NODE_TYPE" == "standby" ]; then
+	nohup ssh -o UserKnownHostsFile=~/.openshift_ssh/known_hosts \
+	-i ~/.openshift_ssh/pg_rsa_key \
+	-N -L \
+	$OPENSHIFT_PG_HOST:$PGCLIENT_STANDBY_PORT:$JEFF_PG_MASTER_IP:$PG_PORT \
+	$JEFF_PG_MASTER_USER@$JEFF_PG_MASTER_DNS &> /dev/null &
 fi
 
