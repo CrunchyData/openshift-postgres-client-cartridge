@@ -44,14 +44,13 @@ do
 
 		if [[ $pgstandbyname == "end" ]]; then
 			break
-		fi
-
-		if [ -z $pgstandbyname ]; then 
+		elif [[ $pgstandbyname == "" ]]; then
 			pgstandbyname=$defaultstandbyname
 		fi
+	
 
-		standbyarray=( "${standbyarray[@]}" $defaultstandbyname )
-		fqdnstandbyarray=( "${fqdnstandbyarray[@]}" $defaultstandbyname-$openshiftdomain.$domainname )
+		standbyarray=( "${standbyarray[@]}" $pgstandbyname )
+		fqdnstandbyarray=( "${fqdnstandbyarray[@]}" $pgstandbyname-$openshiftdomain.$domainname )
 		standbyportarray=( "${standbyportarray[@]}" $standbyportnum )
 
 		let "COUNTER=$COUNTER+1"
