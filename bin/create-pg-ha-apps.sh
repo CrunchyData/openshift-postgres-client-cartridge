@@ -97,6 +97,7 @@ ssh-keygen -F $pgmasterhostname >> ./pg_known_hosts
 
 
 standbyuserarray=()
+standbyiparray=()
 cnt=${standbyarray[@]}
 idx=0
 for standbyapp in ${standbyarray[*]};
@@ -109,8 +110,10 @@ do
 #		echo "creating "$standbyapp
 		rhc create-app -a $standbyapp -t $webframework -g standby --env JEFF_PG_MASTER_USER=$pgmasteruser --env JEFF_PG_MASTER_DNS=$pgmasterdns --env JEFF_PG_MASTER_IP=$pgmasterip --env JEFF_PG_TUNNEL_PORT=${standbyportarray[idx]}
 		standbyuser=`rhc ssh -a $standbyapp 'echo $USER'` 2> /dev/null
+		standbyip=`rhc ssh -a $standbyapp 'echo $OPENSHIFT_PG_HOST'` 2> /dev/null
 #		echo standby user is $standbyuser
 		standbyuserarray=( "${standbyuserarray[@]}" $standbyuser)
+		standbyiparray=( "${standbyiparray[@]}" $standbyip)
 #		echo $standbyapp " created..."
 #		echo "adding Crunchy postgres cartridge to "$standbyapp
 		rhc add-cartridge crunchydatasolutions-pg-1.0 -a $standbyapp --env PG_NODE_TYPE=standby
@@ -122,7 +125,9 @@ do
 done
 
 echo standby users are ${standbyuserarray[@]}
+echo standby ip addresses are ${standbyiparray[@]}
 rhc env-set JEFF_PG_STANDBY_USER_LIST="`echo ${standbyuserarray[@]}`" --app $pgmastername
+rhc env-set JEFF_PG_STANDBY_IP_LIST="`echo ${standbyiparray[@]}`" --app $pgmastername
 
 #now, copy the pg known_hosts to the targets
 rhc scp $pgmastername upload ./pg_known_hosts .openshift_ssh/known_hosts

@@ -10,6 +10,8 @@
 
 echo dns list $JEFF_PG_STANDBY_DNS_LIST
 dnsarray=($JEFF_PG_STANDBY_DNS_LIST)
+echo ip list $JEFF_PG_STANDBY_IP_LIST
+iparray=($JEFF_PG_STANDBY_IP_LIST)
 echo user list $JEFF_PG_STANDBY_USER_LIST
 userarray=($JEFF_PG_STANDBY_USER_LIST)
 echo port list $JEFF_PG_STANDBY_PORT_LIST
@@ -26,7 +28,7 @@ do
 	nohup ssh -o UserKnownHostsFile=~/.openshift_ssh/known_hosts \
 -i ~/.openshift_ssh/pg_rsa_key \
 -N -L \
-$OPENSHIFT_PGCLIENT_HOST:${portarray[idx]}:${dnsarray[idx]}:$PGCLIENT_REMOTE_PG_PORT \
+$OPENSHIFT_PGCLIENT_HOST:${portarray[idx]}:${iparray[idx]}:$PGCLIENT_REMOTE_PG_PORT \
 ${userarray[idx]}@${dnsarray[idx]} &> /dev/null &
 	let "idx=$idx+1"
 done
@@ -37,6 +39,6 @@ done
 nohup ssh -o UserKnownHostsFile=~/.openshift_ssh/known_hosts \
 -i ~/.openshift_ssh/pg_rsa_key \
 -N -L \
-$OPENSHIFT_PGCLIENT_HOST:$PGCLIENT_MASTER_PORT:$PGCLIENT_MASTER_HOST:$PGCLIENT_REMOTE_PG_PORT \
+$OPENSHIFT_PGCLIENT_HOST:$PGCLIENT_MASTER_PORT:$JEFF_PG_MASTER_IP:$PGCLIENT_REMOTE_PG_PORT \
 $JEFF_PG_MASTER_USER@$PGCLIENT_MASTER_DNS &> /dev/null &
 

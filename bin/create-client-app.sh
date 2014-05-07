@@ -88,7 +88,7 @@ echo $masterdns is dns for master
 
 echo "installing crunchy pgclient cartridge onto " $clientname
 
-rhc add-cartridge crunchydatasolutions-pgclient-1.0 -a $clientname  --env PGCLIENT_MASTER_DNS=$masterdns --env JEFF_PG_STANDBY_DNS_LIST="$pgstandbydnslist" --env JEFF_PG_STANDBY_PORT_LIST="$pgstandbyportlist" --env JEFF_PG_STANDBY_USER_LIST="$pgstandbyuserlist" --env JEFF_PG_MASTER_USER="$pgmasteruser"
+rhc add-cartridge crunchydatasolutions-pgclient-1.0 -a $clientname  --env PGCLIENT_MASTER_DNS=$masterdns --env JEFF_PG_STANDBY_DNS_LIST="$pgstandbydnslist" --env JEFF_PG_STANDBY_PORT_LIST="$pgstandbyportlist" --env JEFF_PG_STANDBY_USER_LIST="$pgstandbyuserlist" --env JEFF_PG_MASTER_USER="$pgmasteruser" --env JEFF_PG_MASTER_IP="$pgmasterip"
 
 echo "pgclient cartridge added"
 
