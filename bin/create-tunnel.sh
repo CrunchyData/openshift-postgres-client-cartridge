@@ -38,5 +38,5 @@ nohup ssh -o UserKnownHostsFile=~/.openshift_ssh/known_hosts \
 -i ~/.openshift_ssh/pg_rsa_key \
 -N -L \
 $OPENSHIFT_PGCLIENT_HOST:$PGCLIENT_MASTER_PORT:$PGCLIENT_MASTER_HOST:$PGCLIENT_REMOTE_PG_PORT \
-$PG_MASTER_USER@$PG_MASTER_DNS &> /dev/null &
+$JEFF_PG_MASTER_USER@$PGCLIENT_MASTER_DNS &> /dev/null &
 

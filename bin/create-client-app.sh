@@ -51,6 +51,9 @@ if [[ -z $clientname ]];
     then clientname=$defaultappname;
 fi
 
+echo "enter your master postgres app name:"
+read pgmaster
+
 #
 # perform cleanup if this client already existed
 #
@@ -73,17 +76,19 @@ rhc scp $clientname upload $keypath .openshift_ssh/pg_rsa_key
 # now we are ready to install the client cartridge
 #
 
-echo "enter your master postgres app name:"
-read pgmaster
 
 pgmasterip=`rhc ssh -a $pgmaster 'echo $OPENSHIFT_PG_HOST'` 2> /dev/null
+pgmasteruser=`rhc ssh -a $pgmaster 'echo $USER'` 2> /dev/null
 pgstandbyuserlist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_USER_LIST'` 2> /dev/null
 pgstandbydnslist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_DNS_LIST'` 2> /dev/null
 pgstandbyportlist=`rhc ssh -a $pgmaster 'echo $JEFF_PG_STANDBY_PORT_LIST'` 2> /dev/null
 
+masterdns=$pgmaster-$currentname.$domainname
+echo $masterdns is dns for master
+
 echo "installing crunchy pgclient cartridge onto " $clientname
 
-rhc add-cartridge crunchydatasolutions-pgclient-1.0 -a $clientname  --env PGCLIENT_MASTER_HOST=$pgmasterip --env JEFF_PG_STANDBY_DNS_LIST="$pgstandbydnslist" --env JEFF_PG_STANDBY_PORT_LIST="$pgstandbyportlist" --env JEFF_PG_STANDBY_USER_LIST="$pgstandbyuserlist"
+rhc add-cartridge crunchydatasolutions-pgclient-1.0 -a $clientname  --env PGCLIENT_MASTER_DNS=$masterdns --env JEFF_PG_STANDBY_DNS_LIST="$pgstandbydnslist" --env JEFF_PG_STANDBY_PORT_LIST="$pgstandbyportlist" --env JEFF_PG_STANDBY_USER_LIST="$pgstandbyuserlist" --env JEFF_PG_MASTER_USER="$pgmasteruser"
 
 echo "pgclient cartridge added"
 
