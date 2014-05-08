@@ -57,7 +57,7 @@ function stop() {
 	$OPENSHIFT_PGCLIENT_DIR/bin/stop-tunnel.sh
 
 
-	if [ -n "PG_NODE_TYPE" ]; then
+	if [ -v "PG_NODE_TYPE" ]; then
 		client_result " stopping "
 	else 
 		client_result " stopping pgpool "
