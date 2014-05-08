@@ -91,8 +91,8 @@ host    all             all             ::1/128                 trust
 # replication privilege.
 #local   replication     jeffmc                                trust
 #host    replication     jeffmc        0.0.0.0/0            trust
-<% dns = ENV['JEFF_PG_STANDBY_DNS_LIST'].split(' ')
- users = ENV['JEFF_PG_STANDBY_USER_LIST'].split(' ')
+<% dns = ENV['PGCLIENT_STANDBY_DNS_LIST'].split(' ')
+ users = ENV['PGCLIENT_STANDBY_USER_LIST'].split(' ')
 %>
 <% for idx in (0..dns.length-1) %>
 host    replication     <%= users[idx] %>        <%= dns[idx] %>            trust

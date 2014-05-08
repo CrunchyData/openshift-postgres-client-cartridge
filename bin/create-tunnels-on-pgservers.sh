@@ -13,7 +13,7 @@ elif [ "$PG_NODE_TYPE" == "standby" ]; then
 	nohup ssh -o UserKnownHostsFile=~/.openshift_ssh/known_hosts \
 	-i ~/.openshift_ssh/pg_rsa_key \
 	-N -L \
-	$OPENSHIFT_PG_HOST:$PGCLIENT_STANDBY_PORT:$JEFF_PG_MASTER_IP:$PG_PORT \
-	$JEFF_PG_MASTER_USER@$JEFF_PG_MASTER_DNS &> /dev/null &
+	$OPENSHIFT_PG_HOST:$PGCLIENT_STANDBY_PORT:$PGCLIENT_MASTER_IP:$PG_PORT \
+	$PGCLIENT_MASTER_USER@$PGCLIENT_MASTER_DNS &> /dev/null &
 fi
 

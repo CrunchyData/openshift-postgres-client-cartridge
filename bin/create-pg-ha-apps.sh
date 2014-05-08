@@ -75,7 +75,7 @@ pgmasterdns=$pgmastername-$openshiftdomain.$domainname
 echo $pgmasterdns is PG_MASTER_DNS
 
 echo "adding Crunchy postgres cartridge to "$pgmastername
-rhc add-cartridge crunchydatasolutions-pg-1.0 -a $pgmastername --env PG_NODE_TYPE=master  --env JEFF_PG_STANDBY_DNS_LIST="${fqdnstandbyarray[*]}" --env JEFF_PG_STANDBY_PORT_LIST="${standbyportarray[*]}"
+rhc add-cartridge crunchydatasolutions-pg-1.0 -a $pgmastername --env PG_NODE_TYPE=master  --env PGCLIENT_STANDBY_DNS_LIST="${fqdnstandbyarray[*]}" --env PGCLIENT_STANDBY_PORT_LIST="${standbyportarray[*]}"
 pgmasterip=`rhc ssh -a $pgmastername 'echo $OPENSHIFT_PG_HOST' 2> /dev/null`
 echo PG_MASTER_IP is $pgmasterip
 rhc ssh -a $pgmastername '~/pg/bin/control stop'
@@ -108,7 +108,7 @@ do
 		rhc app-delete -a $standbyapp --confirm
 		/bin/rm -rf $standbyapp
 #		echo "creating "$standbyapp
-		rhc create-app -a $standbyapp -t $webframework -g standby --env JEFF_PG_MASTER_USER=$pgmasteruser --env JEFF_PG_MASTER_DNS=$pgmasterdns --env JEFF_PG_MASTER_IP=$pgmasterip --env JEFF_PG_TUNNEL_PORT=${standbyportarray[idx]}
+		rhc create-app -a $standbyapp -t $webframework -g standby --env PGCLIENT_MASTER_USER=$pgmasteruser --env PGCLIENT_MASTER_DNS=$pgmasterdns --env PGCLIENT_MASTER_IP=$pgmasterip --env PGCLIENT_TUNNEL_PORT=${standbyportarray[idx]}
 		standbyuser=`rhc ssh -a $standbyapp 'echo $USER'` 2> /dev/null
 		standbyuserarray=( "${standbyuserarray[@]}" $standbyuser)
 #		echo $standbyapp " created..."
@@ -126,8 +126,8 @@ done
 
 echo standby users are ${standbyuserarray[@]}
 echo standby ip addresses are ${standbyiparray[@]}
-rhc env-set JEFF_PG_STANDBY_USER_LIST="`echo ${standbyuserarray[@]}`" --app $pgmastername
-rhc env-set JEFF_PG_STANDBY_IP_LIST="`echo ${standbyiparray[@]}`" --app $pgmastername
+rhc env-set PGCLIENT_STANDBY_USER_LIST="`echo ${standbyuserarray[@]}`" --app $pgmastername
+rhc env-set PGCLIENT_STANDBY_IP_LIST="`echo ${standbyiparray[@]}`" --app $pgmastername
 
 #now, copy the pg known_hosts to the targets
 rhc scp $pgmastername upload ./pg_known_hosts .openshift_ssh/known_hosts

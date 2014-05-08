@@ -8,14 +8,14 @@
 #internalIP=`env | grep OPENSHIFT | grep IP | cut -d"=" -f2`
 #echo $internalIP
 
-echo dns list $JEFF_PG_STANDBY_DNS_LIST
-dnsarray=($JEFF_PG_STANDBY_DNS_LIST)
-echo ip list $JEFF_PG_STANDBY_IP_LIST
-iparray=($JEFF_PG_STANDBY_IP_LIST)
-echo user list $JEFF_PG_STANDBY_USER_LIST
-userarray=($JEFF_PG_STANDBY_USER_LIST)
-echo port list $JEFF_PG_STANDBY_PORT_LIST
-portarray=($JEFF_PG_STANDBY_PORT_LIST)
+echo dns list $PGCLIENT_STANDBY_DNS_LIST
+dnsarray=($PGCLIENT_STANDBY_DNS_LIST)
+echo ip list $PGCLIENT_STANDBY_IP_LIST
+iparray=($PGCLIENT_STANDBY_IP_LIST)
+echo user list $PGCLIENT_STANDBY_USER_LIST
+userarray=($PGCLIENT_STANDBY_USER_LIST)
+echo port list $PGCLIENT_STANDBY_PORT_LIST
+portarray=($PGCLIENT_STANDBY_PORT_LIST)
 #
 # create tunnel to each standby postgres server
 #
@@ -39,6 +39,6 @@ done
 nohup ssh -o UserKnownHostsFile=~/.openshift_ssh/known_hosts \
 -i ~/.openshift_ssh/pg_rsa_key \
 -N -L \
-$OPENSHIFT_PGCLIENT_HOST:$PGCLIENT_MASTER_PORT:$JEFF_PG_MASTER_IP:$PGCLIENT_REMOTE_PG_PORT \
-$JEFF_PG_MASTER_USER@$PGCLIENT_MASTER_DNS &> /dev/null &
+$OPENSHIFT_PGCLIENT_HOST:$PGCLIENT_MASTER_PORT:$PGCLIENT_MASTER_IP:$PGCLIENT_REMOTE_PG_PORT \
+$PGCLIENT_MASTER_USER@$PGCLIENT_MASTER_DNS &> /dev/null &
 

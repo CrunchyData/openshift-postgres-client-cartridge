@@ -64,7 +64,7 @@ backend_flag0 = 'ALLOW_TO_FAILOVER'
                                    # Controls various backend behavior
                                    # ALLOW_TO_FAILOVER or DISALLOW_TO_FAILOVER
 <%
-	standbyports = ENV['JEFF_PG_STANDBY_PORT_LIST'].split(' ')
+	standbyports = ENV['PGCLIENT_STANDBY_PORT_LIST'].split(' ')
 %>
 <% for idx in (0..standbyports.length-1) %>
 backend_hostname<%= idx+1 %> = '<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>'
@@ -287,7 +287,7 @@ master_slave_sub_mode = 'stream'
 sr_check_period = 10
                                    # Streaming replication check period
                                    # Disabled (0) by default
-sr_check_user = '<%= ENV['JEFF_PG_MASTER_USER'] %>'
+sr_check_user = '<%= ENV['PGCLIENT_MASTER_USER'] %>'
                                    # Streaming replication check user
                                    # This is neccessary even if you disable streaming
                                    # replication delay check by sr_check_period = 0
@@ -353,7 +353,7 @@ health_check_period = 10
 health_check_timeout = 20
                                    # Health check timeout
                                    # 0 means no timeout
-health_check_user = '<%= ENV['JEFF_PG_MASTER_USER'] %>'
+health_check_user = '<%= ENV['PGCLIENT_MASTER_USER'] %>'
                                    # Health check user
 health_check_password = ''
                                    # Password for health check user
