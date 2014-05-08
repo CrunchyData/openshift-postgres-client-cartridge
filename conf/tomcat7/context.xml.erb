@@ -7,8 +7,11 @@
               maxActive="20"
               maxIdle="5"
               maxWait="10000"/>
-    <Resource name="jdbc/pgstandbyds"
-              url="jdbc:postgresql://<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>:<%= ENV['PGCLIENT_STANDBY_PORT'] %>/template1"
+<% portlist = ENV['PGCLIENT_STANDBY_PORT_LIST'].split(' ')
+%>
+<% for idx in (0..portlist.length-1) %>
+    <Resource name="jdbc/pgstandbyds<%= idx %>"
+              url="jdbc:postgresql://<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>:<%= portlist[idx] %>/template1"
               driverClassName="org.postgresql.Driver"
               username="<%= ENV['PGCLIENT_MASTER_USER'] %>"
               auth="Container"
@@ -16,6 +19,7 @@
               maxActive="20"
               maxIdle="5"
               maxWait="10000"/>
+<% end %>
     <Resource name="jdbc/pgloadbalds"
               url="jdbc:postgresql://<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>:<%= ENV['PGCLIENT_LOADBAL_PORT'] %>/template1"
               driverClassName="org.postgresql.Driver"
