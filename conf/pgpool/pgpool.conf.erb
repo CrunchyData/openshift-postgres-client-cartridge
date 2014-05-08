@@ -63,11 +63,16 @@ backend_weight0 = 1
 backend_flag0 = 'ALLOW_TO_FAILOVER'
                                    # Controls various backend behavior
                                    # ALLOW_TO_FAILOVER or DISALLOW_TO_FAILOVER
-backend_hostname1 = '<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>'
-backend_port1 = <%= ENV['PGCLIENT_STANDBY_PORT'] %>
-backend_weight1 = 1
-#backend_data_directory1 = '/data1'
-backend_flag1 = 'ALLOW_TO_FAILOVER'
+<%
+	standbyports = ENV['JEFF_PG_STANDBY_PORT_LIST'].split(' ')
+%>
+<% for idx in (0..standbyports.length-1) %>
+backend_hostname<%= idx+1 %> = '<%= ENV['OPENSHIFT_PGCLIENT_HOST'] %>'
+backend_port<%= idx+1 %> = <%= standbyports[idx] %>
+backend_weight<%= idx+1 %> = 1
+#backend_data_directory<%= idx+1 %> = '/data1'
+backend_flag<%= idx+1 %> = 'ALLOW_TO_FAILOVER'
+<% end %>
 
 # - Authentication -
 
