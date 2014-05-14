@@ -2,7 +2,7 @@
 
 Summary:       Provides Crunchy Postgres HA client cart
 Name:          openshift-postgres-client-cartridge
-Version:       1.0.3
+Version:       1.0.4
 Release:       1%{?dist}
 Group:         Development/Languages
 License:       ASL 2.0
@@ -36,9 +36,12 @@ Provides postgres haclient cart
 %attr(0755,-,-) %{cartridgedir}/hooks/
 %{cartridgedir}
 %doc %{cartridgedir}/README.md
-%doc %{cartridgedir}/LICENSE
+%doc %{cartridgedir}/crunchy.LICENSE
 
 %changelog
+* Tue May 13 2014 jeff mccormick <jeffmc04@gmail.com> 1.0.4-1
+- 
+
 * Tue May 13 2014 jeff mccormick <jeffmc04@gmail.com> 1.0.3-1
 - new package built with tito
 
