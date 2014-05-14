@@ -1,21 +1,19 @@
-%global cartridgedir %{_libexecdir}/openshift/cartridges/crunchypg-cart
+%global cartridgedir %{_libexecdir}/openshift/cartridges/crunchypg-client-cart
 
-Summary:       Provides Crunchy Postgres 932 support
-Name:          openshift-postgres-932-rh65-cart
-Version:       0.0.6
+Summary:       Provides Crunchy Postgres HA client cart
+Name:          openshift-postgres-client-cartridge
+Version:       1.0.3
 Release:       1%{?dist}
 Group:         Development/Languages
 License:       ASL 2.0
 URL:           http://www.openshift.com
 Source0:       file:///./%{name}-%{version}.tar.gz
-Requires:      rubygem(openshift-origin-node)
-Requires:      openshift-origin-node-util
 Requires:      lsof
 Requires:      bc
 Requires:      /bin/sh
 
 %description
-Provides postgres 932 support to OpenShift. (Cartridge Format V2)
+Provides postgres haclient cart
 
 %prep
 %setup -q
@@ -41,6 +39,9 @@ Provides postgres 932 support to OpenShift. (Cartridge Format V2)
 %doc %{cartridgedir}/LICENSE
 
 %changelog
+* Tue May 13 2014 jeff mccormick <jeffmc04@gmail.com> 1.0.3-1
+- new package built with tito
+
 * Tue Mar 18 2014 Unknown name 0.0.6-1
 - fix (jeffmc@localhost.localdomain)
 
