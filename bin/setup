@@ -36,7 +36,10 @@ if [ -n "$PG_NODE_TYPE" ]; then
         fi
 else
 	echo $OPENSHIFT_PGCLIENT_DIR/versions/pgpool/bin > env/OPENSHIFT_PGCLIENT_PATH_ELEMENT
+	# required for ose 2.0
 	echo $OPENSHIFT_PGCLIENT_DIR/versions/pgpool/lib > env/LD_LIBRARY_PATH
+	# required for ose 2.1
+	echo $OPENSHIFT_PGCLIENT_DIR/versions/pgpool/lib > env/OPENSHIFT_PGCLIENT_LD_LIBRARY_PATH_ELEMENT
 fi
 
 
