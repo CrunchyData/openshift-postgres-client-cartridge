@@ -1,32 +1,60 @@
 #!/bin/bash 
 
+currentname=`rhc domain list | head -1 | cut -f 2 -d " "`
+
 defaultdomain="example.com"
-echo "enter your domain name ["$defaultdomain"]:"
+echo -n "enter your domain name ["$defaultdomain"]:"
 read domainname
 
 if [[ -z $domainname ]];
 	then domainname=$defaultdomain;
 fi
 
-currentname=`rhc domain list | head -1 | cut -f 2 -d " "`
-echo "enter your openshift domain name ["$currentname"]:"
+echo -n "enter your openshift domain name ["$currentname"]:"
 read openshiftdomain
 if [[ -z $openshiftdomain ]];
 	then openshiftdomain=$currentname;
 fi
 
 defaultmastername="pgmaster"
-echo "enter the name of the postgres master app ["$defaultmastername"]:"
+echo -n "enter the name of the postgres master app ["$defaultmastername"]:"
 read pgmastername
 if [[ -z $pgmastername ]];
     then pgmastername=$defaultmastername;
 fi
 
 defaultwebframework="php-5.3"
-echo "enter the web framework to use ["$defaultwebframework"]:"
+echo -n "enter the web framework to use ["$defaultwebframework"]:"
 read webframework
 if [[ -z $webframework ]];
     then webframework=$defaultwebframework;
+fi
+
+defaultstandbygearprofile="small"
+gearsizes=`rhc domain show  | grep Allowed | cut -d ":" -f 2 | tr -d ' '`
+OIFS=$IFS
+IFS=","
+gearsArray=($gearsizes)
+echo "Valid gear sizes are: "
+for ((i=0; i<${#gearsArray[@]}; ++i));
+do
+	echo "${gearsArray[$i]}";
+done
+IFS=$OIFS;
+echo -n "enter the pg standby gear profile to use ["$defaultstandbygearprofile"]:"
+read standbygearprofile
+if [[ -z $standbygearprofile ]];
+    then standbygearprofile=$defaultstandbygearprofile;
+fi
+for ((i=0; i<${#gearsArray[@]}; ++i));
+do
+	if [[ ${gearsArray[$i]} == $standbygearprofile ]]; then
+		validgearused="true"
+	fi
+done
+
+if [[ -z $validgearused ]];
+	then echo "error:  you did not enter a valid gear size" && exit;
 fi
 
 # define a number of standby apps up to max of 5
@@ -39,7 +67,7 @@ standbyportnum=15001
 while [ $COUNTER -lt 5 ] 
 do
 		defaultstandbyname="pgstandby"$COUNTER
-		echo "enter the name of the postgres standby app ["$defaultstandbyname"] or 'end':"
+		echo -n "enter the name of the postgres standby app ["$defaultstandbyname"] or 'end':"
 		read pgstandbyname
 
 		if [[ $pgstandbyname == "end" ]]; then
@@ -62,7 +90,8 @@ echo standby ports are ${standbyportarray[*]}
 
 # clean up master if already exists
 
-pgmasterhostname=$pgmastername-$openshiftdomain.$domainname
+#pgmasterhostname=$pgmastername-$openshiftdomain.$domainname
+pgmasterhostname=$pgmastername
 ssh-keygen -R $pgmasterhostname
 rhc app-delete -a $pgmastername --confirm
 /bin/rm -rf $pgmastername
@@ -92,7 +121,8 @@ chmod 600 ./pg_known_hosts
 
 #now, get the keys for the pg servers from the local_hosts file
 #and build a custom known_hosts file
-ssh-keygen -F $pgmasterhostname >> ./pg_known_hosts
+#ssh-keygen -F $pgmasterhostname >> ./pg_known_hosts
+ssh-keygen -F $pgmasterdns >> ./pg_known_hosts
 
 
 
@@ -103,12 +133,14 @@ idx=0
 for standbyapp in ${standbyarray[*]};
 do
 # clean up previous app with same name if exists
-		pgstandbyhostname=$standbyapp-$openshiftdomain.$domainname
+#		pgstandbyhostname=$standbyapp-$openshiftdomain.$domainname
+		pgstandbyhostname=$standbyapp
+		pgstandbydnsname=$standbyapp-$openshiftdomain.$domainname
 		ssh-keygen -R $pgstandbyhostname
 		rhc app-delete -a $standbyapp --confirm
 		/bin/rm -rf $standbyapp
 #		echo "creating "$standbyapp
-		rhc create-app -a $standbyapp -t $webframework -g standby --env PGCLIENT_MASTER_USER=$pgmasteruser --env PGCLIENT_MASTER_DNS=$pgmasterdns --env PGCLIENT_MASTER_IP=$pgmasterip --env PGCLIENT_TUNNEL_PORT=${standbyportarray[idx]}
+		rhc create-app -a $standbyapp -t $webframework -g $standbygearprofile --env PGCLIENT_MASTER_USER=$pgmasteruser --env PGCLIENT_MASTER_DNS=$pgmasterdns --env PGCLIENT_MASTER_IP=$pgmasterip --env PGCLIENT_TUNNEL_PORT=${standbyportarray[idx]}
 		standbyuser=`rhc ssh -a $standbyapp 'echo $USER'` 2> /dev/null
 		standbyuserarray=( "${standbyuserarray[@]}" $standbyuser)
 #		echo $standbyapp " created..."
@@ -120,7 +152,8 @@ do
 #		echo "adding Crunchy HA cartridge to "$standbyapp
 		rhc add-cartridge crunchydatasolutions-pgclient-1.0 -a $standbyapp
 		rhc ssh -a $standbyapp 'date'
-		ssh-keygen -F $pgstandbyhostname >> ./pg_known_hosts
+#		ssh-keygen -F $pgstandbyhostname >> ./pg_known_hosts
+		ssh-keygen -F $pgstandbydnsname >> ./pg_known_hosts
 		let "idx=$idx+1"
 done
 
