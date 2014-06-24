@@ -2,7 +2,7 @@
 
 Summary:       Provides Crunchy Postgres HA client cart
 Name:          openshift-postgres-client-cartridge
-Version:       1.0.5
+Version:       1.0.6
 Release:       1%{?dist}
 Group:         Development/Languages
 License:       ASL 2.0
@@ -39,6 +39,11 @@ Provides postgres haclient cart
 %doc %{cartridgedir}/crunchy.LICENSE
 
 %changelog
+* Tue Jun 24 2014 jeff mccormick <jeffmc04@gmail.com> 1.0.6-1
+- Merge branch 'master' of github.com:crunchyds/openshift-postgres-client-
+  cartridge (jeffmc@localhost.localdomain)
+- added add-standby-node script (jeffmc@localhost.localdomain)
+
 * Sun Jun 22 2014 jeff mccormick <jeffmc04@gmail.com> 1.0.5-1
 - updated with feedback (jeffmc@localhost.localdomain)
 - Merge branch 'master' of github.com:crunchyds/openshift-postgres-client-
