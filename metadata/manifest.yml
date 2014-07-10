@@ -19,6 +19,7 @@ Scaling:
 Endpoints:
   - Private-IP-Name:   HOST
     Private-Port-Name: PORT
+    Private-Port:      8080
     Public-Port-Name:  PORT
 
 Source-Url: https://github.com/crunchyds/openshift-postgres-client-cartridge.git
